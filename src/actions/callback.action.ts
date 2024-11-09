@@ -48,7 +48,7 @@ const callbackQueryAction = async (query: TelegramBot.CallbackQuery) => {
     const listEpisodeGroup = _.chunk(
       episodes.map((el) =>
         buttonCallback(
-          el._id == selected.episodeId ? `›Tập ${el.name}‹` : `Tập ${el.name}`,
+          el._id == selected.episodeId ? `›${el.name}‹` : `${el.name}`,
           `choose_episode,${el._id}`
         )
       ),
