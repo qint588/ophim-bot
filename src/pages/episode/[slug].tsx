@@ -23,10 +23,10 @@ export default function MovieEpisode() {
                     <p className='block text-center text-sm'>(Negative Positive Angler)</p>
                 </div>
                 <iframe src='https://vip.opstream15.com/share/ca772cc23c0069d24e8d7e6dd0b7b40c' className='w-full flex-1'></iframe>
-                <div className='py-2.5 px-3 grid grid-cols-2 gap-3'>
+                {/* <div className='py-2.5 px-3 grid grid-cols-2 gap-3'>
                     <button className='h-[50px] text-white uppercase rounded-lg'>Previous</button>
                     <button className='h-[50px] bg-cyan-700 shadow-md transition-all hover:bg-opacity-80 text-base flex-1 rounded-lg uppercase'>Next</button>
-                </div>
+                </div> */}
             </div>
         </div>
     )

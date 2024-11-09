@@ -1,4 +1,3 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import connectToDatabase from "@/lib/mongoose";
 import Category from "@/models/category.model";
 import Country from "@/models/country.model";
@@ -124,9 +123,7 @@ const fetchMovies = async (page: number = 1) => {
     .map((el) => el.value.data) as IOphimObjectMovie[];
 
   console.table(movies.map((el) => el.movie.name));
-  for (const movie of movies) {
-    await storeMovie(movie);
-  }
+  console.table(await Promise.allSettled(movies.map((el) => storeMovie(el))));
 };
 
 const storeMovie = async (data: IOphimObjectMovie) => {
@@ -238,9 +235,7 @@ const storeMovie = async (data: IOphimObjectMovie) => {
     { new: true, runValidators: true }
   );
 
-  console.log({
-    movieId: movieUpdated._id,
-  });
+  return movieUpdated._id;
 };
 
 export default async function handler(
@@ -252,10 +247,10 @@ export default async function handler(
   await fetchCategories();
   await fetchCountries();
 
-  const maxPage = (req?.query?.max_page || 30) as number;
-  for (let page = 1; page <= maxPage; page++) {
+  const end = (req?.query?.end || 10) as number;
+  const start = (req?.query?.start || 1) as number;
+  for (let page = start; page <= end; page++) {
     console.table({ page });
-
     await fetchMovies(page);
   }
   res.status(200).json({ message: "Running..." });

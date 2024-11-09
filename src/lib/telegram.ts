@@ -1,4 +1,4 @@
-import TelegramBot from "node-telegram-bot-api";
+import TelegramBot, { InlineKeyboardButton } from "node-telegram-bot-api";
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN as string;
 
@@ -23,6 +23,38 @@ const setWebhook = async (url: string) => {
   } catch (error) {
     console.error("Error setting webhook:", error);
   }
+};
+
+export const buttonSwitchInlineQuery = (
+  text: string,
+  inline_query: string = ""
+): InlineKeyboardButton => {
+  return {
+    text,
+    switch_inline_query_current_chat: inline_query,
+  };
+};
+
+export const buttonWebApp = (
+  text: string,
+  url: string
+): InlineKeyboardButton => {
+  return {
+    text,
+    web_app: {
+      url,
+    },
+  };
+};
+
+export const buttonCallback = (
+  text: string,
+  callback: string
+): InlineKeyboardButton => {
+  return {
+    text,
+    callback_data: callback,
+  };
 };
 
 export { telegramBot, setWebhook };
