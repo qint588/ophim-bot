@@ -2,6 +2,7 @@ import { useTelegram } from '@/hooks/useTelegram';
 import connectToDatabase from '@/lib/mongoose';
 import Episode, { IEpisode } from '@/models/episode.model';
 import Movie, { IMovie } from '@/models/movie.model';
+import axios from 'axios';
 import { GetServerSideProps, GetStaticProps, InferGetServerSidePropsType, InferGetStaticPropsType } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -67,13 +68,14 @@ export const getServerSideProps = (async (context) => {
 }) satisfies GetServerSideProps<Data>
 
 export default function MovieEpisode(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
-    const { webApp, themeParams, height } = useTelegram();
+    const { initDataUnsafe, themeParams, height } = useTelegram();
     const router = useRouter()
 
     const handleNextAction = () => {
         if (!props.episodeNextId) {
             return alert('⚠️ Sorry, There are no more episodes, please watch other episodes')
         }
+        handleChooseEpisode(props.episodeNextId)
         router.push(`/episode/${props.episodeNextId}`)
     }
 
@@ -81,7 +83,20 @@ export default function MovieEpisode(props: InferGetServerSidePropsType<typeof g
         if (!props.episodePreviousId) {
             return alert('⚠️ Sorry, There are no more episodes, please watch other episodes')
         }
+        handleChooseEpisode(props.episodePreviousId)
         router.push(`/episode/${props.episodePreviousId}`)
+    }
+
+    const handleChooseEpisode = async (id: string) => {
+        try {
+            const response = await axios.post('/api/choose-episode', {
+                userId: initDataUnsafe?.user?.id,
+                episodeId: id
+            })
+            console.log(response);
+        } catch (error) {
+            console.log('Error', error);
+        }
     }
 
     return (
