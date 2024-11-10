@@ -4,6 +4,7 @@ import Country from "@/models/country.model";
 import Episode, { IEpisode } from "@/models/episode.model";
 import Movie from "@/models/movie.model";
 import Server, { IServer } from "@/models/server.model";
+import { toSlug } from "@/utils/index.util";
 import axios from "axios";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -108,13 +109,21 @@ const fetchCountries = async () => {
 };
 
 const fetchMovies = async (page: number = 1) => {
+  // const response = await axios.get(
+  //   "https://ophim1.com/danh-sach/phim-moi-cap-nhat",
+  //   {
+  //     params: { page },
+  //   }
+  // );
+  // const items = response.data.items;
   const response = await axios.get(
-    "https://ophim1.com/danh-sach/phim-moi-cap-nhat",
+    "https://ophim17.cc/_next/data/uVgvnGWsolD0jrmrHS1tA/danh-sach/hoat-hinh.json",
     {
-      params: { page },
+      params: { page, sort_field: "modified.time", slug: "hoat-hinh" },
     }
   );
-  const listPromise = response.data.items.map((el: { slug: string }) =>
+  const items = response.data.pageProps.data.items;
+  const listPromise = items.map((el: { slug: string }) =>
     axios.get("https://ophim1.com/phim/" + el.slug)
   );
 
@@ -189,12 +198,15 @@ const storeMovie = async (data: IOphimObjectMovie) => {
 
   let episodeIds = [];
   for (const episodeServer of episodes) {
+    const serverName = episodeServer.server_name.trim();
+    const serverSlug = toSlug(serverName);
     const server: IServer = await Server.findOneAndUpdate(
       {
-        name: episodeServer.server_name,
+        slug: serverSlug,
       },
       {
-        name: episodeServer.server_name,
+        name: serverName,
+        slug: serverSlug,
       },
       {
         upsert: true,
@@ -247,9 +259,11 @@ export default async function handler(
   await fetchCategories();
   await fetchCountries();
 
-  const end = (req?.query?.end || 10) as number;
-  const start = (req?.query?.start || 1) as number;
-  for (let page = start; page <= end; page++) {
+  const end = (req?.query?.end || 10) as string;
+  const start = (req?.query?.start || 1) as string;
+  console.log({ start, end });
+
+  for (let page = parseInt(start); page <= parseInt(end); page++) {
     console.table({ page });
     await fetchMovies(page);
   }
