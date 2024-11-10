@@ -19,11 +19,11 @@ const inlineQueryAction = async (query: TelegramBot.InlineQuery) => {
           {
             id: "nocontent",
             type: "article",
-            title: "No results found 😓",
+            title: "Không tìm thấy kết quả nào 😓",
             input_message_content: {
               message_text: "/search",
             },
-            description: "⚠️ If it doesn't work, read the instructions.",
+            description: "⚠️ Nếu không được, hãy đọc hướng dẫn.",
           },
         ]
       : movies.map((el) => {

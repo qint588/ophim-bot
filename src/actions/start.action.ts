@@ -20,9 +20,9 @@ const startAction = async (msg: TelegramBot.Message) => {
   );
   await telegramBot.sendMessage(
     msg.chat.id,
-    `🍿 Hello, movie buff!
+    `🍿 Xin chào, người mê phim!
 
-🔍 To search, use the buttons below or send a movie title in a message`,
+🔍 Để tìm kiếm, hãy sử dụng các nút bên dưới hoặc gửi tiêu đề phim trong tin nhắn`,
     {
       reply_markup: {
         inline_keyboard: [[buttonSwitchInlineQuery("🔍 Start searching")]],

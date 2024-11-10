@@ -147,15 +147,15 @@ const callbackQueryAction = async (query: TelegramBot.CallbackQuery) => {
         inline_keyboard: [
           [
             buttonWebApp(
-              `📺 Watch ` +
+              `📺 Xem ` +
                 (watchHistory.episodeId?.slug == "full"
                   ? "now"
                   : `(Tập ${watchHistory.episodeId.name})`),
               `${process.env.APP_URL}/episode/${watchHistory.episodeId._id}`
             ),
           ],
-          [buttonCallback("🔢 Select episode", `episodes,${movieId}`)],
-          [buttonSwitchInlineQuery("🔍 Start another searching")],
+          [buttonCallback("🔢 Chọn tập", `episodes,${movieId}`)],
+          [buttonSwitchInlineQuery("🔍 Bắt đầu tìm kiếm khác")],
         ],
       },
       {
@@ -195,15 +195,15 @@ const callbackQueryAction = async (query: TelegramBot.CallbackQuery) => {
         inline_keyboard: [
           [
             buttonWebApp(
-              `📺 Watch ` +
+              `📺 Xem ` +
                 (watchHistory.episodeId?.slug == "full"
                   ? "now"
                   : `(Tập ${watchHistory.episodeId.name})`),
               `${process.env.APP_URL}/episode/${watchHistory.episodeId._id}`
             ),
           ],
-          [buttonCallback("🔢 Select episode", `episodes,${movie._id}`)],
-          [buttonSwitchInlineQuery("🔍 Start another searching")],
+          [buttonCallback("🔢 Chọn tập", `episodes,${movie._id}`)],
+          [buttonSwitchInlineQuery("🔍 Bắt đầu tìm kiếm khác")],
         ],
       },
       {
