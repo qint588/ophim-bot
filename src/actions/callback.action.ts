@@ -151,7 +151,7 @@ const callbackQueryAction = async (query: TelegramBot.CallbackQuery) => {
                 (watchHistory.episodeId?.slug == "full"
                   ? "now"
                   : `(Tập ${watchHistory.episodeId.name})`),
-              `${process.env.APP_URL}/episode/${movieId}`
+              `${process.env.APP_URL}/episode/${watchHistory.episodeId._id}`
             ),
           ],
           [buttonCallback("🔢 Select episode", `episodes,${movieId}`)],
