@@ -40,7 +40,7 @@ class MovieService {
         : {}
     )
       .select(
-        "_id name slug originalName porsterUrl thumbUrl year episodeCurrent"
+        "_id name slug originalName porsterUrl thumbUrl year episodeCurrent time"
       )
       .sort(
         keyword

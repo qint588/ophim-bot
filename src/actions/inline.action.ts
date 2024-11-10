@@ -37,7 +37,9 @@ const inlineQueryAction = async (query: TelegramBot.InlineQuery) => {
             thumb_url: el.porsterUrl,
             thumb_height: 100,
             thumb_width: 100,
-            description: `${el.episodeCurrent} - Year: ${el.year}`,
+            description: `${
+              el.episodeCurrent == "Full" ? el.time : el.episodeCurrent
+            } - Năm: ${el.year}`,
           };
         });
 

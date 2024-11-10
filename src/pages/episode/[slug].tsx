@@ -108,13 +108,10 @@ export default function MovieEpisode(props: InferGetServerSidePropsType<typeof g
                     <p className='block text-center text-sm'>({props.originalName})</p>
                 </div>
                 <iframe src={props.episodeEmbed} className='w-full flex-1'></iframe>
-                {
-                    props.type != 'single' &&
-                    <div className='py-2.5 px-1 grid grid-cols-2 gap-3'>
-                        <button onClick={handlePreviousAction} className='h-[48px] flex items-center justify-center text-white uppercase rounded-full'>Previous</button>
-                        <button onClick={handleNextAction} className='h-[48px] flex items-center justify-center bg-cyan-700 shadow-md transition-all hover:bg-opacity-80 flex-1  rounded-full uppercase'>Next</button>
-                    </div>
-                }
+                <div className='py-2.5 px-1 grid grid-cols-2 gap-3'>
+                    <button onClick={handlePreviousAction} className='h-[48px] flex items-center justify-center text-white uppercase rounded-full'>Previous</button>
+                    <button onClick={handleNextAction} className='h-[48px] flex items-center justify-center bg-cyan-700 shadow-md transition-all hover:bg-opacity-80 flex-1  rounded-full uppercase'>Next</button>
+                </div>
             </div >
         </div>
     );
