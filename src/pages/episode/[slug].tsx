@@ -81,7 +81,6 @@ export default function MovieEpisode(props: InferGetServerSidePropsType<typeof g
         if (!props.episodePreviousId) {
             return alert('⚠️ Sorry, There are no more episodes, please watch other episodes')
         }
-        webap
         router.push(`/episode/${props.episodePreviousId}`)
     }
 
