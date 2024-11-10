@@ -13,7 +13,7 @@ telegramBot.onText(/o(.+)/, movieAction);
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<any>
+  res: NextApiResponse<string>
 ) {
   if (req.method === "POST") {
     await connectToDatabase();

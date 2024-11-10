@@ -7,7 +7,7 @@ import {
 import movieService from "@/services/movie.service";
 import TelegramBot, { InlineKeyboardButton } from "node-telegram-bot-api";
 import * as _ from "lodash";
-import Episode, { IEpisode } from "@/models/episode.model";
+import Episode from "@/models/episode.model";
 import User from "@/models/user.model";
 
 const callbackQueryAction = async (query: TelegramBot.CallbackQuery) => {
@@ -76,14 +76,14 @@ const callbackQueryAction = async (query: TelegramBot.CallbackQuery) => {
       if (el.length == pagination.chunkSize) {
         return el;
       }
-      let items: InlineKeyboardButton[] = [];
+      const items: InlineKeyboardButton[] = [];
       for (let index = 0; index < pagination.chunkSize; index++) {
         items.push(el[index] || buttonCallback("➖", "unknown"));
       }
       return items;
     });
 
-    let buttonListEpisode: InlineKeyboardButton[][] = [];
+    const buttonListEpisode: InlineKeyboardButton[][] = [];
     for (
       let index = 0;
       index < Math.ceil(pagination.pageSize / pagination.chunkSize);

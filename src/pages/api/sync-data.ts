@@ -137,7 +137,7 @@ const fetchMovies = async (page: number = 1) => {
 
 const storeMovie = async (data: IOphimObjectMovie) => {
   const { movie, episodes } = data;
-  let catIds = [];
+  const catIds = [];
   for (const category of movie.category) {
     const cat = await Category.findOneAndUpdate(
       { slug: category.slug },
@@ -150,7 +150,7 @@ const storeMovie = async (data: IOphimObjectMovie) => {
     catIds.push(cat._id);
   }
 
-  let countryIds = [];
+  const countryIds = [];
   for (const country of movie.country) {
     const ctry = await Country.findOneAndUpdate(
       { slug: country.slug },
@@ -196,7 +196,7 @@ const storeMovie = async (data: IOphimObjectMovie) => {
     }
   );
 
-  let episodeIds = [];
+  const episodeIds = [];
   for (const episodeServer of episodes) {
     const serverName = episodeServer.server_name.trim();
     const serverSlug = toSlug(serverName);

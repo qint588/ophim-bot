@@ -12,11 +12,11 @@ export function useTelegram() {
       tgWebApp.expand();
       setWebApp(tgWebApp);
 
-      //@ts-ignore
+      //@ts-expect-error: Hidden error
       setHeight(tgWebApp.viewportStableHeight || window.innerHeight);
-      //@ts-ignore
+      //@ts-expect-error: Hidden error
       tgWebApp.onEvent("viewportChanged", () => {
-        //@ts-ignore
+        //@ts-expect-error: Hidden error
         setHeight(tgWebApp.viewportStableHeight || window.innerHeight);
       });
     }

@@ -7,11 +7,11 @@ if (!MONGODB_URI) {
   throw new Error("Please define the MONGODB_URI environment variable");
 }
 
-// @ts-ignore
+// @ts-expect-error: Hidden error
 let cached = global.mongoose;
 
 if (!cached) {
-  // @ts-ignore
+  // @ts-expect-error: Hidden error
   cached = global.mongoose = { conn: null, promise: null };
 }
 

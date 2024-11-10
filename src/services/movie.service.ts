@@ -1,9 +1,9 @@
-import Category, { ICategory } from "@/models/category.model";
+import Category from "@/models/category.model";
 import Country from "@/models/country.model";
 import Episode, { IEpisode } from "@/models/episode.model";
 import Movie, { IMovie } from "@/models/movie.model";
 import Server, { IServer } from "@/models/server.model";
-import User, { IUser } from "@/models/user.model";
+import User from "@/models/user.model";
 import WatchHistory, { IWatchHistory } from "@/models/watch-history.model";
 import * as _ from "lodash";
 
@@ -76,10 +76,7 @@ class MovieService {
 
     return movie;
   }
-  async getEpisodeByMovieId(
-    _id: string,
-    selected: Record<string, string> = {}
-  ): Promise<IEpisodeGroupByServer[]> {
+  async getEpisodeByMovieId(_id: string): Promise<IEpisodeGroupByServer[]> {
     const episodes = await Episode.find({
       movie: _id,
     });
@@ -89,7 +86,7 @@ class MovieService {
         $in: _.keys(episodeGroupByServer),
       },
     });
-    let result: IEpisodeGroupByServer[] = [];
+    const result: IEpisodeGroupByServer[] = [];
     for (const [key, value] of Object.entries(episodeGroupByServer)) {
       result.push({
         server: _.first(servers.filter((el) => el._id == key)),

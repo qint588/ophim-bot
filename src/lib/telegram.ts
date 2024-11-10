@@ -6,11 +6,11 @@ if (!TELEGRAM_BOT_TOKEN) {
   throw new Error("Please define the TELEGRAM_BOT_TOKEN environment variable");
 }
 
-// @ts-ignore
+// @ts-expect-error: Hidden error
 let telegramBot: TelegramBot = global.telegramBot;
 
 if (!telegramBot || process.env.APP_ENV == "local") {
-  // @ts-ignore
+  // @ts-expect-error: Hidden error
   telegramBot = global.telegramBot = new TelegramBot(TELEGRAM_BOT_TOKEN, {
     polling: false,
   });

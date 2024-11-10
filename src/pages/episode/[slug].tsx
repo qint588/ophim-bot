@@ -3,10 +3,10 @@ import connectToDatabase from '@/lib/mongoose';
 import Episode, { IEpisode } from '@/models/episode.model';
 import Movie, { IMovie } from '@/models/movie.model';
 import axios from 'axios';
-import { GetServerSideProps, GetStaticProps, InferGetServerSidePropsType, InferGetStaticPropsType } from 'next';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
+import Script from 'next/script';
 import React from 'react'
 
 type Data = {
@@ -60,7 +60,8 @@ export const getServerSideProps = (async (context) => {
                 episodeNextId: nextEpisode?._id?.toString() || '',
             }
         }
-    } catch (error) {
+    } catch (error: unknown) {
+        console.log('Error', error);
         return {
             notFound: true
         }
@@ -109,8 +110,8 @@ export default function MovieEpisode(props: InferGetServerSidePropsType<typeof g
             }}
             className='font-sans'
         >
+            <Script src="https://telegram.org/js/telegram-web-app.js" />
             <Head>
-                <script src="https://telegram.org/js/telegram-web-app.js"></script>
                 <title>{props.name} ({props.originalName})</title>
             </Head>
             <div className='h-full flex flex-col max-w-[560px] mx-auto' >

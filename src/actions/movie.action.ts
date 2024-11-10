@@ -4,9 +4,11 @@ import {
   buttonWebApp,
   telegramBot,
 } from "@/lib/telegram";
+import { ICategory } from "@/models/category.model";
+import { ICountry } from "@/models/country.model";
 import { IMovie } from "@/models/movie.model";
 import movieService from "@/services/movie.service";
-import TelegramBot, { ChatId } from "node-telegram-bot-api";
+import TelegramBot from "node-telegram-bot-api";
 
 const generateStatus = (status: string) => {
   if (status == "ongoing") {
@@ -19,13 +21,12 @@ const generateStatus = (status: string) => {
 };
 
 const generateCaption = (movie: IMovie) => {
+  const categories = movie.categories as ICategory[];
+  const countries = movie.countries as ICountry[];
+
   let caption = `${movie.name} (${movie.originalName})\n\n`;
-  caption += `👉 Thể loại: ${movie.categories
-    .map((el: any) => el.name)
-    .join(", ")}\n`;
-  caption += `👉 Quốc gia: ${movie.countries
-    .map((el: any) => el.name)
-    .join(", ")}\n`;
+  caption += `👉 Thể loại: ${categories.map((el) => el.name).join(", ")}\n`;
+  caption += `👉 Quốc gia: ${countries.map((el) => el.name).join(", ")}\n`;
   caption += `👉 Thời gian: ${movie.time}\n`;
   caption += `👉 Năm: ${movie.year}\n`;
   caption += `👉 Ngôn ngữ: ${movie.lang}\n`;
