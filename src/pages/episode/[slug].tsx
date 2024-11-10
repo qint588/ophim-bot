@@ -6,7 +6,6 @@ import axios from 'axios';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import Script from 'next/script';
 import React from 'react'
 
 type Data = {
@@ -103,14 +102,13 @@ export default function MovieEpisode(props: InferGetServerSidePropsType<typeof g
     return (
         <div
             style={{
-                backgroundColor: themeParams?.bg_color || '#ffffff',
-                color: themeParams?.text_color || '#000000',
+                backgroundColor: themeParams?.bg_color || '#000000',
+                color: themeParams?.text_color || '#ffffff',
                 height: height ? `${height}px` : '100vh',
                 overflow: 'hidden'
             }}
             className='font-sans'
         >
-            <Script src="https://telegram.org/js/telegram-web-app.js" />
             <Head>
                 <title>{props.name} ({props.originalName})</title>
             </Head>
