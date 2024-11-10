@@ -5,7 +5,7 @@ import {
   telegramBot,
 } from "@/lib/telegram";
 import movieService from "@/services/movie.service";
-import TelegramBot from "node-telegram-bot-api";
+import TelegramBot, { ChatId } from "node-telegram-bot-api";
 
 const movieAction = async (
   msg: TelegramBot.Message,
@@ -17,10 +17,11 @@ const movieAction = async (
     if (!movie) {
       throw new Error("Movie not found");
     }
+    const watchHistory = await movieService.watchHistory(
+      msg.chat.id,
+      movie._id as string
+    );
     let caption = `${movie.name} (${movie.originalName})\n\n`;
-    caption += `${movie.content
-      .replace(/<\/?.+?>/gi, "")
-      .replaceAll("&nbsp;", "")}\n\n`;
     caption += `👉 Categories: ${movie.categories
       .map((el: any) => el.name)
       .join(",")}\n`;
@@ -38,11 +39,14 @@ const movieAction = async (
         inline_keyboard: [
           [
             buttonWebApp(
-              "📺 Watch now",
-              `${process.env.APP_URL}/episode/${movie._id}`
+              `📺 Watch ` +
+                (watchHistory.episodeId?.slug == "full"
+                  ? "now"
+                  : `(Tập ${watchHistory.episodeId.name})`),
+              `${process.env.APP_URL}/episode/${watchHistory.episodeId._id}`
             ),
-            buttonCallback("🔢 Select episode", `episodes,${movie._id}`),
           ],
+          [buttonCallback("🔢 Select episode", `episodes,${movie._id}`)],
           [buttonSwitchInlineQuery("🔍 Start another searching")],
         ],
       },

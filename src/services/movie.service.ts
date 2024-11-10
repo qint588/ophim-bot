@@ -3,6 +3,8 @@ import Country from "@/models/country.model";
 import Episode, { IEpisode } from "@/models/episode.model";
 import Movie, { IMovie } from "@/models/movie.model";
 import Server, { IServer } from "@/models/server.model";
+import User, { IUser } from "@/models/user.model";
+import WatchHistory, { IWatchHistory } from "@/models/watch-history.model";
 import * as _ from "lodash";
 
 interface ISearchParms {
@@ -95,6 +97,61 @@ class MovieService {
       });
     }
     return result;
+  }
+
+  async watchHistory(userId: number, movieId: string): Promise<IWatchHistory> {
+    const user = await User.findOne({
+      userId,
+    });
+    let watchHistory: IWatchHistory | null = await WatchHistory.findOne({
+      userId: user._id,
+      movieId: movieId,
+    });
+
+    if (!watchHistory) {
+      const servers = await this.getEpisodeByMovieId(movieId);
+      const firstServer = _.first(servers);
+      watchHistory = await this.storeWatchHistory(
+        user._id,
+        movieId,
+        firstServer?.server?._id as string,
+        _.first(firstServer?.episodes)?._id as string
+      );
+    }
+    const server = await Server.findOne({
+      _id: watchHistory.serverId,
+    });
+    watchHistory.serverId = server;
+    const episode = await Episode.findOne({
+      _id: watchHistory.episodeId,
+    });
+    watchHistory.episodeId = episode;
+
+    return watchHistory;
+  }
+
+  async storeWatchHistory(
+    userId: string,
+    movieId: string,
+    serverId: string,
+    episodeId: string
+  ): Promise<IWatchHistory> {
+    return await WatchHistory.findOneAndUpdate(
+      {
+        userId: userId,
+        movieId: movieId,
+      },
+      {
+        movieId: movieId,
+        userId: userId,
+        episodeId: episodeId,
+        serverId: serverId,
+      },
+      {
+        upsert: true,
+        new: true,
+      }
+    );
   }
 }
 

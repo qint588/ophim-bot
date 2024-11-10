@@ -8,30 +8,49 @@ import movieService from "@/services/movie.service";
 import TelegramBot, { InlineKeyboardButton } from "node-telegram-bot-api";
 import * as _ from "lodash";
 import Episode, { IEpisode } from "@/models/episode.model";
+import User from "@/models/user.model";
 
 const callbackQueryAction = async (query: TelegramBot.CallbackQuery) => {
   const queryData = query.data?.split(",") || [];
   const key = queryData[0];
   if (key == "episodes" && !!queryData[1]) {
     const movieId = queryData[1];
-    const page = (queryData[2] || 1) as number;
     const servers = await movieService.getEpisodeByMovieId(movieId);
-    const firstServer = _.first(servers);
+    const watchHistory = await movieService.watchHistory(
+      query.message?.chat.id as number,
+      movieId
+    );
+
     const selected = {
-      serverId: firstServer?.server?._id,
-      episodeId: _.first(firstServer?.episodes)?._id,
+      serverId: watchHistory.serverId.id,
+      episodeId: watchHistory.episodeId.id,
     };
+
     const serverSelected = _.first(
       servers.filter((el) => el.server._id == selected.serverId)
     );
+
     const buttonListServer = servers.map((el) =>
       buttonCallback(
-        `${el.server._id == selected.serverId ? "✅" : "🔲"} ${el.server.name}`,
+        `${el.server.id == selected.serverId ? "✅" : "🔲"} ${el.server.name}`,
         `server,${movieId},${el.server._id}`
       )
     );
 
     const pageSize = 20;
+
+    let page = Math.ceil(
+      ((serverSelected?.episodes.findIndex(
+        (el) => el.id == selected.episodeId
+      ) as number) +
+        1) /
+        pageSize
+    );
+
+    if (queryData[2]) {
+      page = (queryData[2] || 1) as number;
+    }
+
     const pagination = {
       page,
       pageSize,
@@ -119,16 +138,23 @@ const callbackQueryAction = async (query: TelegramBot.CallbackQuery) => {
   }
   if (key == "back_to_movie" && !!queryData[1]) {
     const movieId = queryData[1];
+    const watchHistory = await movieService.watchHistory(
+      query.message?.chat.id as number,
+      movieId
+    );
     await telegramBot.editMessageReplyMarkup(
       {
         inline_keyboard: [
           [
             buttonWebApp(
-              "📺 Watch now",
+              `📺 Watch ` +
+                (watchHistory.episodeId?.slug == "full"
+                  ? "now"
+                  : `(Tập ${watchHistory.episodeId.name})`),
               `${process.env.APP_URL}/episode/${movieId}`
             ),
-            buttonCallback("🔢 Select episode", `episodes,${movieId}`),
           ],
+          [buttonCallback("🔢 Select episode", `episodes,${movieId}`)],
           [buttonSwitchInlineQuery("🔍 Start another searching")],
         ],
       },
@@ -150,16 +176,33 @@ const callbackQueryAction = async (query: TelegramBot.CallbackQuery) => {
     if (!movie) {
       throw new Error("Movie not found");
     }
+    const user = await User.findOne({
+      userId: query.message?.chat.id,
+    });
+
+    await movieService.storeWatchHistory(
+      user._id,
+      movie._id as string,
+      episode.server,
+      episode._id
+    );
+    const watchHistory = await movieService.watchHistory(
+      query.message?.chat.id as number,
+      movie._id as string
+    );
     await telegramBot.editMessageReplyMarkup(
       {
         inline_keyboard: [
           [
             buttonWebApp(
-              "📺 Watch now",
-              `${process.env.APP_URL}/episode/${movie._id}`
+              `📺 Watch ` +
+                (watchHistory.episodeId?.slug == "full"
+                  ? "now"
+                  : `(Tập ${watchHistory.episodeId.name})`),
+              `${process.env.APP_URL}/episode/${watchHistory.episodeId._id}`
             ),
-            buttonCallback("🔢 Select episode", `episodes,${movie._id}`),
           ],
+          [buttonCallback("🔢 Select episode", `episodes,${movie._id}`)],
           [buttonSwitchInlineQuery("🔍 Start another searching")],
         ],
       },
