@@ -1,9 +1,11 @@
+import { useTelegram } from '@/hooks/useTelegram';
 import connectToDatabase from '@/lib/mongoose';
 import Episode, { IEpisode } from '@/models/episode.model';
 import Movie, { IMovie } from '@/models/movie.model';
 import { GetServerSideProps, GetStaticProps, InferGetServerSidePropsType, InferGetStaticPropsType } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React from 'react'
 
 type Data = {
@@ -65,12 +67,39 @@ export const getServerSideProps = (async (context) => {
 }) satisfies GetServerSideProps<Data>
 
 export default function MovieEpisode(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
+    const { webApp, themeParams, height } = useTelegram();
+    const router = useRouter()
+
+    const handleNextAction = () => {
+        if (!props.episodeNextId) {
+            return alert('⚠️ Sorry, There are no more episodes, please watch other episodes')
+        }
+        router.push(`/episode/${props.episodeNextId}`)
+    }
+
+    const handlePreviousAction = () => {
+        if (!props.episodePreviousId) {
+            return alert('⚠️ Sorry, There are no more episodes, please watch other episodes')
+        }
+        webap
+        router.push(`/episode/${props.episodePreviousId}`)
+    }
+
     return (
-        <div className='font-sans w-full h-screen'>
+        <div
+            style={{
+                backgroundColor: themeParams?.bg_color || '#ffffff',
+                color: themeParams?.text_color || '#000000',
+                height: height ? `${height}px` : '100vh',
+                overflow: 'hidden'
+            }}
+            className='font-sans'
+        >
             <Head>
+                <script src="https://telegram.org/js/telegram-web-app.js"></script>
                 <title>{props.name} ({props.originalName})</title>
             </Head>
-            <div className='h-screen flex flex-col max-w-[560px] mx-auto' >
+            <div className='h-full flex flex-col max-w-[560px] mx-auto' >
                 <div className='p-3 bg-[#000]'>
                     <h2 className='font-bold text-lg text-center uppercase'>{props.name}
                         {props.type != 'single' &&
@@ -81,13 +110,13 @@ export default function MovieEpisode(props: InferGetServerSidePropsType<typeof g
                 </div>
                 <iframe src={props.episodeEmbed} className='w-full flex-1'></iframe>
                 {
-                    props.type != 'single' ?
-                        <div className='py-2.5 px-3 grid grid-cols-2 gap-3'>
-                            <Link href={props.episodePreviousId ? `/episode/${props.episodePreviousId}` : '#'} className='h-[48px] flex items-center justify-center text-white uppercase rounded-lg'>Previous</Link>
-                            <Link href={props.episodeNextId ? `/episode/${props.episodeNextId}` : '#'} className='h-[48px] flex items-center justify-center bg-cyan-700 shadow-md transition-all hover:bg-opacity-80 flex-1 rounded-lg uppercase'>Next</Link>
-                        </div> : <div className='py-5 bg-[#000]'></div>
+                    props.type != 'single' &&
+                    <div className='py-2.5 px-1 grid grid-cols-2 gap-3'>
+                        <button onClick={handlePreviousAction} className='h-[48px] flex items-center justify-center text-white uppercase rounded-full'>Previous</button>
+                        <button onClick={handleNextAction} className='h-[48px] flex items-center justify-center bg-cyan-700 shadow-md transition-all hover:bg-opacity-80 flex-1  rounded-full uppercase'>Next</button>
+                    </div>
                 }
             </div >
         </div>
-    )
+    );
 }
