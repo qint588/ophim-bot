@@ -2,8 +2,10 @@ module.exports = {
   apps: [
     {
       name: "Telegram Phimmoiii Bot", // application name
-      script: "index.js", // script path to pm2 start
-
+      script: "node_modules/next/dist/bin/next", // script path to pm2 start
+      args: "start",
+      cwd: "./",
+      instances: "max",
       // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
       instances: 1, // number process of application
       autorestart: true, //auto restart if app crashes
